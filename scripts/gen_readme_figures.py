@@ -334,9 +334,9 @@ def fig_ilt_benchmark_four_way(
     fig, axes = plt.subplots(2, 5, figsize=(15.5, 6.2))
     row0 = [
         ("Target (desired print)", tgt.numpy()),
-        (f"Mask - AdaGrad (lr={best_ada:g}, {n_ada} steps)", m_ada.numpy()),
-        (f"Mask - RMSprop (lr={best_rms:g}, {n_rms} steps)", m_rms.numpy()),
-        (f"Mask - Adam (lr={best_adam:g}, {n_adam} steps)", m_a.numpy()),
+        (f"Mask - AdaGrad", m_ada.numpy()),
+        (f"Mask - RMSprop", m_rms.numpy()),
+        (f"Mask - Adam", m_a.numpy()),
         (f"Mask - L2O ({n_l2o} steps)", m_l.numpy()),
     ]
 
@@ -350,22 +350,22 @@ def fig_ilt_benchmark_four_way(
 
     row1 = [
         ("Target (same)", tgt.numpy()),
-        ("Printed (nominal) - AdaGrad", p_ada.numpy()),
-        ("Printed (nominal) - RMSprop", p_rms.numpy()),
-        ("Printed (nominal) - Adam", p_a.numpy()),
-        ("Printed (nominal) - L2O", p_l.numpy()),
+        ("Printed (nom) - AdaGrad", p_ada.numpy()),
+        ("Printed (nom) - RMSprop", p_rms.numpy()),
+        ("Printed (nom) - Adam", p_a.numpy()),
+        ("Printed (nom) - L2O", p_l.numpy()),
     ]
     for ax, (title, img) in zip(axes[0], row0):
         ax.imshow(img, cmap="gray", vmin=0, vmax=1)
-        ax.set_title(title, fontsize=7)
+        ax.set_title(title, fontsize=15)
         ax.axis("off")
     for ax, (title, img) in zip(axes[1], row1):
         ax.imshow(img, cmap="gray", vmin=0, vmax=1)
-        ax.set_title(title, fontsize=7)
+        ax.set_title(title, fontsize=15)
         ax.axis("off")
     fig.suptitle(
         f"ILT toy model (ICCAD 2013 clip): same inner budget ({n_adam} steps) for all optimizers",
-        fontsize=9,
+        fontsize=20,
     )
     fig.tight_layout()
     out.parent.mkdir(parents=True, exist_ok=True)
