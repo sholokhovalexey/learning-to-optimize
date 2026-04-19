@@ -5,8 +5,6 @@
 (same raster path as ``benchmarks/iccad2013/M1_test*.glp``). Generate them with
 ``scripts/prepare_ilt_training_data.py synthetic``.
 
-**Optional:** ``--metalset`` uses LithoBench MetalSet ``target/*.png`` and a persisted JSON split.
-
 **ICCAD eval:** ``benchmarks/iccad2013/M1_test*.glp`` (separate ``eval_ilt_benchmark_table.py``).
 
 Example::

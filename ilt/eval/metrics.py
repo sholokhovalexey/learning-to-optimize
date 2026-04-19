@@ -1,7 +1,7 @@
 """LithoBench-style ILT metrics (Zheng et al., NeurIPS 2023): binarized images, fixed eval resolution.
 
 The LithoBench paper evaluates L2 and PVB after **binarizing** masks and printed images, with outputs
-interpolated to **2048×2048** before metric computation. We apply the same protocol to this repo's
+interpolated to **2048x2048** before metric computation. We apply the same protocol to this repo's
 toy litho stack so comparisons use a **fixed optimization budget** (inner steps) and **reported**
 metrics that match common academic reporting - still on the **same differentiable proxy** as training,
 not full industrial lithography.

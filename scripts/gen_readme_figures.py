@@ -584,7 +584,7 @@ def main() -> None:
             )
         else:
             print(
-                f"[ilt figure] Using legacy 2×3 panel (benchmark clip or checkpoint missing: {bench_glp}, {ck_ilt})",
+                f"[ilt figure] Using legacy 2x3 panel (benchmark clip or checkpoint missing: {bench_glp}, {ck_ilt})",
                 file=sys.stderr,
             )
             fig_ilt_notebook_style(

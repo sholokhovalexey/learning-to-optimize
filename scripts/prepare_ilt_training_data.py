@@ -20,20 +20,6 @@ tiles out of the box.
 (``synthetic`` subcommand); use ``scripts/train_ilt_l2o.py --metalset`` for LithoBench MetalSet PNGs under
 ``data/MetalSet/``. Optional ICCAD 2012 zip: ``python -m ilt.datasets.download --iccad2012-zip``.
 
-This script provides:
-
-* **synthetic** - random Metal-like ``.glp`` clips for ``scripts/train_ilt_l2o.py`` (default training data layout).
-* **lithobench** - LithoBench fetch helper (``--try-download`` via ``gdown``).
-
-Examples::
-
-    # Synthetic training clips (default output: data/synthetic_glp_train/)
-    python scripts/prepare_ilt_training_data.py synthetic --n 256
-
-    # Then train and benchmark per README Quick-start: scripts/train_ilt_l2o.py, scripts/eval_ilt_benchmark_table.py
-
-    # Optional: LithoBench Drive download
-    python scripts/prepare_ilt_training_data.py lithobench --help
 """
 
 from __future__ import annotations

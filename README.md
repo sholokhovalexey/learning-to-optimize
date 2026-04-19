@@ -44,7 +44,7 @@ The **meta-objective** is a functional of the induced inner trajectory, typicall
 \mathcal{J}(\phi)=\mathbb{E}_{i\sim\mathcal{T}}\!\left[\sum_{t=0}^{T-1}\alpha_t\,L_i(\theta_t)\right].
 ```
 
-Since $(\theta_t,h_t)$ depend on $\phi$ through $F_\phi$, the **outer** problem is to minimize $\mathcal{J}(\phi)$ via stochastic task sampling. In simple words, we encourage a learned optimizer to follow an optimization trajectory with the lowest values of the objective $L_i$ along this trajectory. The lowest possible loss would be achieved if the optimizer finds the global minimum in one step and then keeps staying these.
+Since $(\theta_t,h_t)$ depend on $\phi$ through $F_\phi$, the **outer** problem is to minimize $\mathcal{J}(\phi)$ via stochastic task sampling. In simple terms, we encourage a learned optimizer to follow an optimization trajectory with low values of the objective $L_i$. The lowest possible loss would be achieved if the optimizer found the global minimum in one step and then stayed there.
 
 This repo implements meta-training of **neural optimizers** (`OptimizerNeural*` in `l2o/models.py`) on batches of problem-specific **optimizee** tasks (`problems/*/optimizee.py`). To this end, it uses a mean inner loss over unrolled steps with *truncated backpropagation through time* (BPTT).
 
@@ -62,12 +62,12 @@ v_t = \beta_2 v_{t-1} + (1-\beta_2)\, g_t \odot g_t,
 
 with $g_t = \nabla L_i(\theta_t)$.
 
-With the notation above, the update rule for optimized parameters $\theta$ is written as follows:
+With the notation above, the update rule for the optimized parameters $\theta$ is:
 ```math
 \theta_{t+1} = \theta_t - \alpha \frac{m_t}{\sqrt{v_t} + \varepsilon}.
 ```
 
-Adam uses optimizer state $ h_t = \{m_t, v_t, t\} $, and a fixed parameter vector $ \phi_{\mathrm{adam}} = \{\alpha, \beta_1, \beta_2, \varepsilon\} $, so its transition can also be written in the general form introduced earlier. Thus, Adam is an analytic, non-learned instance of the same stateful-map template. 
+Adam uses optimizer state $ h_t = \{m_t, v_t, t\} $, and a fixed parameter vector $ \phi_{\mathrm{adam}} = \{\alpha, \beta_1, \beta_2, \varepsilon\} $, so its transition can also be written in the general form introduced earlier. Thus, Adam is an analytic, non-learned instance of the same stateful-map template.
 
 In L2O, in contrast, $\phi$ is optimized from task data rather than fixed a priori.
 
@@ -78,7 +78,7 @@ A central design question in L2O is how to represent $F_\phi$ so it scales to hi
 
 A **coordinate-wise** architecture applies the **same** network to each coordinate $j$ of $g_t$, optionally with **per-coordinate** hidden state, so the computational complexity scales gently with $d$. Also, this approach naturally supports variable-size optimizees. This weight-sharing bias is often a good trade-off between expressivity and generalization, especially when many coordinates have similar local update statistics.
 
-This repo uses stacked LSTM cells with **log-encoded** gradients $\mathrm{concat}(\log|g_j|,\, \mathrm{sign}(g_j))$, objective $\log L$, and normalized step, as inputs - see `l2o/models.py` (`OptimizerNeuralCoordinatewiseGradEnc`).
+This repo uses stacked LSTM cells with **log-encoded** gradients $\mathrm{concat}(\log|g_j|, \mathrm{sign}(g_j))$, objective $\log L$, and normalized step, as inputs - see `l2o/models.py` (`OptimizerNeuralCoordinatewiseGradEnc`).
 
 ---
 
@@ -128,7 +128,7 @@ M \;\xrightarrow{\text{optics}}\; \text{aerial intensity} \;\xrightarrow{\text{r
 ```
 with $\mathbf{M}$ denoting a mask.
 
-During this process, the higher frequency components of the diffracted mask image are lost thereby causing a blurry version of the mask image at the imaging (wafer) plane.
+During this process, the high-frequency components of the diffracted mask image are lost, causing a blurred version of the mask image at the imaging (wafer) plane.
 
 <p align="center">
 <img src="docs/images/Diagram-of-the-optical-lithography-system.png" width="500">
@@ -187,7 +187,7 @@ A recent line of work combines **L2O** with **ILT**. The L2O-ILT framework from 
 
 L2O-ILT adopts ILT-specific structure in the network so that it can output a high-quality initial mask amenable to fast refinement, improving both mask printability and runtime relative to hand-crafted algorithms, such as gradient descent.
 
-The present codebase is a minimal demo, and **not** a reimplementation of the full L2O-ILT solution from the paper. 
+The present codebase is a minimal L2O demo, and **not** a reimplementation of the solution from the paper. 
 
 ---
 
@@ -201,7 +201,7 @@ Note: This repo uses a toy SOCS litho in `ILTOptimizee`, not full industrial sim
 
 **Architecture:** `scripts/train_ilt_l2o.py` uses **`gradenc`** only - `OptimizerNeuralCoordinatewiseGradEnc` (two LSTM layers per coordinate) in `l2o/models.py`.
 
-The eval script tunes AdaGrad, RMSprop, and Adam learning rates on a small subset of training layouts, then runs the same inner-step budget for every optimizer on each ICCAD clip. Reported **L2** and **PVB** follow the **LithoBench** protocol: bilinear upsampling to **2048×2048**, **binarization** at 0.5.
+The eval script tunes AdaGrad, RMSprop, and Adam learning rates on a small subset of training layouts, then runs the same inner-step budget for every optimizer on each ICCAD clip. Reported **L2** and **PVB** follow the **LithoBench** protocol: bilinear upsampling to **2048x2048** and **binarization** at 0.5.
 
 <p align="center">
 <img src="docs/images/ilt_inference_comparison.png" width="600">
@@ -223,7 +223,8 @@ Here $\mathcal{L} = \mathrm{L2} + \lambda_{\mathrm{PV}}\,\mathrm{PVB}$ uses the 
 
 ### 4.2 Discussion
 
-On these **mean** ICCAD benchmark numbers (L2O meta-trained on **synthetic** ICCAD-style `.glp`, ICCAD-only eval), the README checkpoint improves **total $\mathcal{L}$** and **mean L2** versus tuned AdaGrad, RMSprop, and Adam at grid **32** and **512** inner steps; mean PVB can trade off with L2 via $\lambda_{\mathrm{PV}}$. Results depend on the synthetic generator, train/val split, and unroll; see `scripts/train_ilt_l2o.py`. For **MetalSet** training, use `--metalset` and tune baselines with MetalSet PNGs or an explicit `--tune-glp-dir` if you want `.glp`-matched hyperparameters.
+On these **mean** ICCAD benchmark numbers (L2O meta-trained on **synthetic** ICCAD-style `.glp`, ICCAD-only eval), the README checkpoint improves **total $\mathcal{L}$** and **mean L2** versus tuned AdaGrad, RMSprop, and Adam at grid **32** with **512** inner steps; mean PVB can trade off against L2 via $\lambda_{\mathrm{PV}}$. Results depend on the synthetic generator, train/val split, and unroll; see `scripts/train_ilt_l2o.py`.
+
 
 ---
 
@@ -255,7 +256,7 @@ python scripts/train_quadratic_l2o.py
 python scripts/train_ilt_l2o.py --out checkpoints/ilt_l2o.pt
 ```
 
-**Evaluate on the ICCAD benchmark** (use **`--grid 32`** to match the default checkpoint; **`--tune-glp-dir data/synthetic_glp_train`** matches synthetic-trained L2O and baseline LR search)
+**Evaluate on the ICCAD benchmark** (use **`--grid 32`** to match the default checkpoint)
 ```bash
 python scripts/eval_ilt_benchmark_table.py --checkpoint checkpoints/ilt_l2o.pt --tune-glp-dir data/synthetic_glp_train --grid 32 --inner-steps 512 --eval-size 2048 --device cuda
 ```
