@@ -67,7 +67,7 @@ With the notation above, the update rule for the optimized parameters $\theta$ i
 \theta_{t+1} = \theta_t - \alpha \frac{m_t}{\sqrt{v_t} + \varepsilon}.
 ```
 
-Adam uses optimizer state $h_t = \{m_t, v_t, t\}$, and a fixed parameter vector $\phi_{\mathrm{adam}} = \{\alpha, \beta_1, \beta_2, \varepsilon\}$, so its transition can also be written in the general form introduced earlier. Thus, Adam is an analytic, non-learned instance of the same stateful-map template.
+Adam uses optimizer state $h_t = (m_t, v_t, t)$, and a fixed parameter vector $\phi_{\mathrm{adam}} = (\alpha, \beta_1, \beta_2, \varepsilon)$, so its transition can also be written in the general form introduced earlier. Thus, Adam is an analytic, non-learned instance of the same stateful-map template.
 
 In L2O, in contrast, $\phi$ is optimized from task data rather than fixed a priori.
 
